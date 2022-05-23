@@ -1,19 +1,35 @@
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getClubByOwnerId, getOffersByClub } from "../../api/user.api";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
+import { UserContext } from "../../providers/UserProvider";
 
 /* This example requires Tailwind CSS v2.0+ */
-const offers = [
-  {
-    startDate: "Lindsay Walton",
-    endDate: "Front-end Developer",
-    price: "lindsay.walton@example.com",
-    products: "Member",
-  },
-  // More people...
-];
+// const offers = [
+//   {
+//     startDate: "Lindsay Walton",
+//     endDate: "Front-end Developer",
+//     price: "lindsay.walton@example.com",
+//     products: "Member",
+//   },
+//   // More people...
+// ];
 
 export default function Offers() {
+  const { user } = useContext(UserContext);
+
+  const [offers, setOffers] = useState([]);
+
+  useEffect(() => {
+    getClubByOwnerId(user._delegate.uid).then((res) => {
+      getOffersByClub(res.club._id).then((response) => {
+        console.log(response);
+        setOffers(response.offers);
+      });
+    });
+  }, []);
+
   return (
     <>
       <Header />
@@ -39,6 +55,12 @@ export default function Offers() {
                 <table className="min-w-full divide-y divide-gray-300">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Denumire oferta
+                      </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -73,7 +95,10 @@ export default function Offers() {
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {offers.map((person) => (
-                      <tr key={person.email}>
+                      <tr>
+                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                          {person.name}
+                        </td>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                           {person.startDate}
                         </td>

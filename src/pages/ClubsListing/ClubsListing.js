@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getClubs } from "../../api/user.api";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 
@@ -51,6 +54,14 @@ const posts = [
 ];
 
 export default function ClubsListing() {
+  const [clubs, setClubs] = useState([]);
+
+  useEffect(() => {
+    getClubs().then((response) => {
+      setClubs(response.clubs);
+    });
+  }, []);
+
   return (
     <>
       <Header />
@@ -65,37 +76,43 @@ export default function ClubsListing() {
             </h2>
           </div>
           <div className="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">
-            {posts.map((post) => (
-              <div
-                key={post.name}
-                className="flex flex-col rounded-lg shadow-lg overflow-hidden"
-              >
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-48 w-full object-cover"
-                    src={post.imageUrl}
-                    alt=""
-                  />
+            {clubs.map((post) =>
+              post.approved ? (
+                <div
+                  key={post.name}
+                  className="flex flex-col rounded-lg shadow-lg overflow-hidden"
+                >
+                  <Link to={`/user/club/${post._id}`}>
+                    <div className="flex-shrink-0">
+                      <img
+                        className="h-48 w-full object-cover"
+                        src="https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex-1 bg-white p-6 flex flex-col justify-between">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-indigo-600">
+                          <a href="#" className="hover:underline">
+                            {post.musicGenre}
+                          </a>
+                        </p>
+                        <a href="#" className="block mt-2">
+                          <p className="text-xl font-semibold text-gray-900">
+                            {post.name}
+                          </p>
+                          <p className="text-l font-semibold text-gray-900">
+                            {post.city}
+                          </p>
+                        </a>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-                <div className="flex-1 bg-white p-6 flex flex-col justify-between">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-indigo-600">
-                      <a href="#" className="hover:underline">
-                        {post.musicGenre}
-                      </a>
-                    </p>
-                    <a href="#" className="block mt-2">
-                      <p className="text-xl font-semibold text-gray-900">
-                        {post.name}
-                      </p>
-                      <p className="text-l font-semibold text-gray-900">
-                        {post.city}
-                      </p>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ) : (
+                ""
+              )
+            )}
           </div>
         </div>
       </div>

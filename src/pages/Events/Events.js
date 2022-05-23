@@ -1,19 +1,34 @@
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getClubByOwnerId, getEventsByClub } from "../../api/user.api";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
+import { UserContext } from "../../providers/UserProvider";
 
 /* This example requires Tailwind CSS v2.0+ */
-const people = [
-  {
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  // More people...
-];
+// const people = [
+//   {
+//     name: "Lindsay Walton",
+//     title: "Front-end Developer",
+//     email: "lindsay.walton@example.com",
+//     role: "Member",
+//   },
+//   // More people...
+// ];
 
 export default function Events() {
+  const { user } = useContext(UserContext);
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    getClubByOwnerId(user._delegate.uid).then((res) => {
+      getEventsByClub(res.club._id).then((response) => {
+        setEvents(response.events);
+      });
+    });
+  }, []);
+
   return (
     <>
       <Header />
@@ -55,7 +70,7 @@ export default function Events() {
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Locuri disponibile
+                        Descriere eveniment
                       </th>
                       <th
                         scope="col"
@@ -66,16 +81,16 @@ export default function Events() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {people.map((person) => (
-                      <tr key={person.email}>
+                    {events.map((event) => (
+                      <tr>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {person.name}
+                          {event.eventName}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.title}
+                          {event.date}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.email}
+                          {event.description}
                         </td>
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                           <a
@@ -83,7 +98,7 @@ export default function Events() {
                             className="text-indigo-600 hover:text-indigo-900"
                           >
                             Editeaza
-                            <span className="sr-only">, {person.name}</span>
+                            <span className="sr-only">, {event.eventName}</span>
                           </a>
                         </td>
                       </tr>

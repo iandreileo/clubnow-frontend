@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createClub } from "../../api/user.api";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
@@ -22,7 +23,7 @@ import { UserContext } from "../../providers/UserProvider";
 */
 export default function AddClub() {
   const { user } = useContext(UserContext);
-
+  const navigate = useNavigate();
   const [fields, setFields] = useState({
     name: "",
     ownerId: "",
@@ -54,15 +55,7 @@ export default function AddClub() {
 
     createClub(fields).then((response) => {
       console.log(response);
-      setFields({
-        name: "",
-        ownerId: "",
-        address: "",
-        foundationDate: "",
-        musicGenre: "",
-        city: "",
-        approved: false,
-      });
+      navigate("/club/dashboard");
     });
 
     console.log(fields);

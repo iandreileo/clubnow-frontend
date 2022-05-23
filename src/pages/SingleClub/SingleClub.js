@@ -1,5 +1,7 @@
 import { PaperClipIcon, StarIcon } from "@heroicons/react/outline";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { getClubById, getEventsById, getOffersById } from "../../api/user.api";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 const reviews = [
@@ -19,20 +21,45 @@ const reviews = [
 ];
 
 /* This example requires Tailwind CSS v2.0+ */
-const offers = [
-  {
-    startDate: "Lindsay Walton",
-    endDate: "Front-end Developer",
-    price: "lindsay.walton@example.com",
-    products: "Member",
-  },
-  // More people...
-];
+// const offers = [
+//   {
+//     startDate: "Lindsay Walton",
+//     endDate: "Front-end Developer",
+//     price: "lindsay.walton@example.com",
+//     products: "Member",
+//   },
+//   // More people...
+// ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const SingleClub = () => {
+  let { id } = useParams();
+
+  const [club, setClub] = useState({});
+  const [offers, setOffers] = useState([]);
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    if (id !== undefined) {
+      console.log(id);
+      getClubById(id).then((response) => {
+        setClub(response.club);
+        getOffersById(id).then((responseOffer) => {
+          setOffers(responseOffer.offers);
+          console.log(offers);
+        });
+
+        getEventsById(id).then((rsp) => {
+          setEvents(rsp.events);
+          console.log(events);
+        });
+      });
+    }
+  }, [id]);
+
   return (
     <>
       <Header />
@@ -51,7 +78,7 @@ const SingleClub = () => {
             <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
               <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
                 <span className="block text-white">Bine ai venit la</span>
-                <span className="block text-indigo-200">{"numeclub"}</span>
+                <span className="block text-indigo-200">{club.name}</span>
               </h1>
             </div>
           </div>
@@ -70,7 +97,7 @@ const SingleClub = () => {
               <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">Adresa</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  Adresa
+                  {club.address}
                 </dd>
               </div>
               <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -78,13 +105,13 @@ const SingleClub = () => {
                   Gen muzica:
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  Gen
+                  {club.musicGenre}
                 </dd>
               </div>
               <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">Oras:</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  Oras
+                  {club.city}
                 </dd>
               </div>
             </dl>
@@ -173,6 +200,12 @@ const SingleClub = () => {
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
+                        Denumire oferta
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
                         Data inceput
                       </th>
                       <th
@@ -196,19 +229,95 @@ const SingleClub = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {offers.map((person) => (
-                      <tr key={person.email}>
+                    {offers &&
+                      offers.map((person) => (
+                        <tr>
+                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            {person.name}
+                          </td>
+                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            {person.startDate}
+                          </td>
+                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {person.endDate}
+                          </td>
+                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {person.price}
+                          </td>
+                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {person.products}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/*  */}
+
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-8">
+        <div className="sm:flex sm:items-center">
+          <div className="sm:flex-auto">
+            <h1 className="text-xl font-semibold text-gray-900">Evenimente</h1>
+          </div>
+        </div>
+        <div className="mt-8 flex flex-col">
+          <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+              <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                      >
+                        Denumire eveniment
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Data eveniment
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Descriere eveniment
+                      </th>
+                      <th
+                        scope="col"
+                        className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                      >
+                        <span className="sr-only">Editeaza eveniment</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    {events.map((event) => (
+                      <tr>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {person.startDate}
+                          {event.eventName}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.endDate}
+                          {event.date}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.price}
+                          {event.description}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.products}
+                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                          <a
+                            href="#"
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            Editeaza
+                            <span className="sr-only">, {event.eventName}</span>
+                          </a>
                         </td>
                       </tr>
                     ))}
