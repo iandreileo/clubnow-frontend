@@ -86,7 +86,7 @@ export default function ClubsListing() {
                     <div className="flex-shrink-0">
                       <img
                         className="h-48 w-full object-cover"
-                        src="https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80"
+                        src={post.profileImage?post.profileImage:"https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80"}
                         alt=""
                       />
                     </div>

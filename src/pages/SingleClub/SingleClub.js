@@ -1,24 +1,24 @@
 import { PaperClipIcon, StarIcon } from "@heroicons/react/outline";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getClubById, getEventsById, getOffersById } from "../../api/user.api";
+import { getClubById, getEventsById, getOffersById, getReviewsByClub } from "../../api/user.api";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
-const reviews = [
-  {
-    id: 1,
-    title: "Can't say enough good things",
-    rating: 5,
-    content: `
-        <p>I was really pleased with the overall shopping experience. My order even included a little personal, handwritten note, which delighted me!</p>
-        <p>The product quality is amazing, it looks and feel even better than I had anticipated. Brilliant stuff! I would gladly recommend this store to my friends. And, now that I think of it... I actually have, many times!</p>
-      `,
-    author: "Risako M",
-    date: "May 16, 2021",
-    datetime: "2021-01-06",
-  },
-  // More reviews...
-];
+// const reviews = [
+//   {
+//     id: 1,
+//     title: "Can't say enough good things",
+//     rating: 5,
+//     content: `
+//         <p>I was really pleased with the overall shopping experience. My order even included a little personal, handwritten note, which delighted me!</p>
+//         <p>The product quality is amazing, it looks and feel even better than I had anticipated. Brilliant stuff! I would gladly recommend this store to my friends. And, now that I think of it... I actually have, many times!</p>
+//       `,
+//     author: "Risako M",
+//     date: "May 16, 2021",
+//     datetime: "2021-01-06",
+//   },
+//   // More reviews...
+// ];
 
 /* This example requires Tailwind CSS v2.0+ */
 // const offers = [
@@ -35,6 +35,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const SingleClub = () => {
+
+  const [reviews, setReviews] = useState();
+
   let { id } = useParams();
 
   const [club, setClub] = useState({});
@@ -43,7 +46,9 @@ const SingleClub = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
+
     if (id !== undefined) {
+      getReviewsByClub(id).then((res) => setReviews(res.reviews));
       console.log(id);
       getClubById(id).then((response) => {
         setClub(response.club);
@@ -122,7 +127,7 @@ const SingleClub = () => {
       <div className="bg-white max-w-7xl mx-auto sm:px-6 lg:px-8 mb-8 my-16">
         <h2 className="text-lg font-medium text-gray-900">Recenzii club</h2>
         <div className="mt-6 pb-10 border-t border-b border-gray-200 divide-y divide-gray-200 space-y-10">
-          {reviews.map((review) => (
+          {!reviews?"":reviews.map((review) => (
             <div
               key={review.id}
               className="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8"
@@ -151,18 +156,18 @@ const SingleClub = () => {
 
                 <div className="mt-4 lg:mt-6 xl:mt-0 xl:col-span-2">
                   <h3 className="text-sm font-medium text-gray-900">
-                    {review.title}
+                    {review.clientId}
                   </h3>
 
                   <div
                     className="mt-3 space-y-6 text-sm text-gray-500"
-                    dangerouslySetInnerHTML={{ __html: review.content }}
+                    dangerouslySetInnerHTML={{ __html: review.review }}
                   />
                 </div>
               </div>
 
               <div className="mt-6 flex items-center text-sm lg:mt-0 lg:col-start-1 lg:col-span-4 lg:row-start-1 lg:flex-col lg:items-start xl:col-span-3">
-                <p className="font-medium text-gray-900">{review.author}</p>
+                <p className="font-medium text-gray-900">{review.clientId}</p>
                 <time
                   dateTime={review.datetime}
                   className="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0"
@@ -173,12 +178,14 @@ const SingleClub = () => {
             </div>
           ))}
         </div>
+        <Link to={"/user/club/"+id+"/addreview"}>
         <button
           type="button"
           className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
         >
           Ofera recenzie
-        </button>{" "}
+        </button>
+        </Link>
       </div>
 
       {/*  */}

@@ -18,6 +18,11 @@ import { ProtectedRouteLogged } from "./utils/ProtectedRoute";
 import AddClub from "./pages/AddClub/AddClub";
 import { useContext } from "react";
 import { LoadingContext } from "./providers/LoadingProvider";
+import AddReview from "./pages/AddReview";
+import AprobareClub from "./pages/AprobareClub/AprobareClub";
+import DashboardAdmin from "./pages/DashboardAdmin/DashboardAmin";
+import EditClub from "./pages/EditClub/EditClub";
+import VeziCluburiAdmin from "./pages/VeziCluburiAdmin/VeziCluburiAdmin";
 
 function App() {
   const [loading] = useContext(LoadingContext);
@@ -60,14 +65,18 @@ function App() {
 
           <Route path="/club/reservations" element={<ReservationsClub />} />
 
-          <Route path="/club/reviews" element={<ReviewsClub />} />
+          <Route path="/club/reviews/:id" element={<ReviewsClub />} />
+          <Route path="/club/editclub/:id" element={<EditClub />} />
 
           {/*  */}
-
+          <Route path="/admin/dashboard" element={<DashboardAdmin />} />
           <Route path="/user/dashboard" element={<DashboardUser />} />
           <Route path="/user/addclub" element={<AddClub />} />
           <Route path="/user/clubs" element={<ClubsListing />} />
           <Route path="/user/club/:id" element={<SingleClub />} />
+          <Route path="/user/club/:id/addreview" element={<AddReview />} />
+          <Route path="/admin/aprobareclub" element={<AprobareClub />} />
+          <Route path="/admin/allclubs" element={<VeziCluburiAdmin />} />
         </Routes>
       )}
     </div>

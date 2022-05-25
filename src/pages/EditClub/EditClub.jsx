@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createClub } from "../../api/user.api";
+import { useNavigate, useParams } from "react-router-dom";
+import { createClub, getClubById, updateClub } from "../../api/user.api";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import { UserContext } from "../../providers/UserProvider";
@@ -21,9 +21,10 @@ import { UserContext } from "../../providers/UserProvider";
   }
   ```
 */
-export default function AddClub() {
+const EditClub = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
+  const { id } = useParams();
   const [fields, setFields] = useState({
     name: "",
     ownerId: "",
@@ -34,6 +35,11 @@ export default function AddClub() {
     city: "",
     approved: false,
   });
+
+  useEffect(() => {
+    getClubById(id).then((res) => setFields(res.club));
+    console.log(setFields);
+  }, []);
 
   const handleInputChange = (e) => {
     let fieldsCopy = Object.assign({}, fields);
@@ -54,9 +60,8 @@ export default function AddClub() {
 
     setFields(fieldsCopy);
 
-    createClub(fields).then((response) => {
+    updateClub(id, fields).then((response) => {
       console.log(response);
-      navigate("/club/dashboard");
     });
 
     console.log(fields);
@@ -115,6 +120,7 @@ export default function AddClub() {
                   />
                 </div>
               </div>
+
               <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                 <label
                   htmlFor="last-name"
@@ -214,4 +220,6 @@ export default function AddClub() {
       <Footer />
     </>
   );
-}
+};
+
+export default EditClub;

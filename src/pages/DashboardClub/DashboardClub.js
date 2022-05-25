@@ -37,42 +37,14 @@ import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import { UserContext } from "../../providers/UserProvider";
 
-const actions = [
-  {
-    title: "Evenimente",
-    href: "/club/events",
-    icon: ClockIcon,
-    iconForeground: "text-teal-700",
-    iconBackground: "bg-teal-50",
-  },
-  {
-    title: "Oferte",
-    href: "/club/offers",
-    icon: BadgeCheckIcon,
-    iconForeground: "text-purple-700",
-    iconBackground: "bg-purple-50",
-  },
-  {
-    title: "Recenzii",
-    href: "/club/reviews",
-    icon: UsersIcon,
-    iconForeground: "text-sky-700",
-    iconBackground: "bg-sky-50",
-  },
-  {
-    title: "Rezervari",
-    href: "/club/reservations",
-    icon: CashIcon,
-    iconForeground: "text-yellow-700",
-    iconBackground: "bg-yellow-50",
-  },
-];
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function DashboardClub() {
+const DashboardClub = () => {
+  const [actions,setActions] = useState([]);
   const { user } = useContext(UserContext);
 
   const [haveClub, setHaveClub] = useState();
@@ -84,6 +56,44 @@ export default function DashboardClub() {
         console.log("da", res);
         setHaveClub(true);
         setClub(res.club);
+        console.log(res.club._id);
+        setActions([
+          {
+            title: "Evenimente",
+            href: "/club/events",
+            icon: ClockIcon,
+            iconForeground: "text-teal-700",
+            iconBackground: "bg-teal-50",
+          },
+          {
+            title: "Oferte",
+            href: "/club/offers",
+            icon: BadgeCheckIcon,
+            iconForeground: "text-purple-700",
+            iconBackground: "bg-purple-50",
+          },
+          {
+            title: "Recenzii",
+            href: "/club/reviews/"+res.club._id,
+            icon: UsersIcon,
+            iconForeground: "text-sky-700",
+            iconBackground: "bg-sky-50",
+          },
+          {
+            title: "Rezervari",
+            href: "/club/reservations",
+            icon: CashIcon,
+            iconForeground: "text-yellow-700",
+            iconBackground: "bg-yellow-50",
+          },
+          {
+            title: "Editeaza club",
+            href: "/club/editclub/"+res.club._id,
+            icon: CashIcon,
+            iconForeground: "text-yellow-700",
+            iconBackground: "bg-yellow-50",
+          },
+        ]);
       } else {
         console.log("nu");
         setHaveClub(false);
@@ -173,3 +183,5 @@ export default function DashboardClub() {
     </>
   );
 }
+
+export default DashboardClub;
