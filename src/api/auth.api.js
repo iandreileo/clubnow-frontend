@@ -20,15 +20,14 @@ export const getUser = async (user, accountType) => {
   const { email, uid, metadata } = user._delegate;
 
   try {
-    const res = await axios.get(`${HOST}:${PORT}/api/v1/user`, {
-      uid: uid,
-    });
-    const response = res.data.user[0];
+    const res = await axios.get(`${HOST}:${PORT}/api/v1/user?uid=${uid}`);
+    const response = res.data.user;
+    console.log(response)
     return response;
   } catch (err) {
     if (err.response.status === 404) {
       createUser(user, accountType).then((response) => {
-        console.log(response);
+        console.log(response.user);
         return response.user;
       });
     }

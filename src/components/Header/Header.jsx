@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
@@ -10,7 +10,11 @@ import { HandleLogout } from "../../utils";
 
 const Header = () => {
   const { user } = useContext(UserContext);
+  console.log(user)
 
+  useEffect(() => {
+    console.log(user);
+  },[]  );
   return (
     <header>
       <Popover className="relative bg-white">
@@ -59,12 +63,15 @@ const Header = () => {
                 >
                   USER
                 </Link>
-                <Link
+                {
+                  user.user.type == 0 ?
+                  <Link
                   to="/admin/dashboard"
                   className="ml-8 whitespace-nowrap inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:from-purple-700 hover:to-indigo-700"
                 >
                   ADMIN
-                </Link>
+                </Link> : ""
+                }
                 <Link
                   to="/club/dashboard"
                   className="ml-8 whitespace-nowrap inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-origin-border px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:from-purple-700 hover:to-indigo-700"

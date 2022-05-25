@@ -62,6 +62,7 @@ const EditClub = () => {
 
     updateClub(id, fields).then((response) => {
       console.log(response);
+      window.location.reload();
     });
 
     console.log(fields);
@@ -75,7 +76,7 @@ const EditClub = () => {
           <div>
             <div>
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Adauga Club
+                Editeaza Club
               </h3>
             </div>
           </div>
